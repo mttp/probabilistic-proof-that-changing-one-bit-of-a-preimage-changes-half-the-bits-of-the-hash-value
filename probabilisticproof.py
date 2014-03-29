@@ -114,11 +114,12 @@ def getavgbitdiff(hashbindigestlist):
 def printresults(resultsdict):
     for hash in resultsdict:
         abd = getavgbitdiff(resultsdict[hash])
-        print "Changing 1 bit in the preimage changes {:.2%} of the bits " + \
-              "in the {} hash.".format(abd, hash)
+        print "Changing 1 bit in the preimage changes {:.2%} ".format(abd) + \
+              "the bits in the {} hash.".format(hash)
 
 
 def main():
+    print "Using hash functions from PyCrypto..."
     numsandhashes = makenumbers()
     hashtypes = dict((allhash[h],getalldigestsoftype(h, numsandhashes)) for \
                 h in range(len(allhash)))
