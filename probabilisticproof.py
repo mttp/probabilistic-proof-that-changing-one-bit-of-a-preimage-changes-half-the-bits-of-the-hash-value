@@ -100,7 +100,7 @@ def getsinglebitdiff(binstr1, binstr2):
             else: pass
         percentchanged = (a+0.)/length
         return percentchanged
-        
+
 
 def getavgbitdiff(hashbindigestlist):
     bitdiffs = []
@@ -111,20 +111,20 @@ def getavgbitdiff(hashbindigestlist):
     return np.array(bitdiffs).mean()
 
 
-def genbitdiffsgraph():
-    pass
+def printresults(resultsdict):
+    for hash in resultsdict:
+        abd = getavgbitdiff(resultsdict[hash])
+        print "Changing 1 bit in the preimage changes {:.2%} of the bits in the {} hash.".format(abd, hash)
+
 
 def main():
     numsandhashes = makenumbers()
-    hashtypes = \
-        dict((allhash[h],getalldigestsoftype(h, numsandhashes)) for h in \
-        range(len(allhash)))
-    for hash in hashtypes:
-        abd = getavgbitdiff(hashtypes[hash])
-        print "Changing 1 bit in the preimage changes {:.2%} of the bits in the {} hash.".format(abd, hash)
+    hashtypes = dict((allhash[h],getalldigestsoftype(h, numsandhashes)) for \
+                h in range(len(allhash)))
+    printresults(hashtypes)
+    exit()
 
 
 if __name__ == '__main__':
     main()
-    exit()
 
