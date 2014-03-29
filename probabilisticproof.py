@@ -114,7 +114,8 @@ def getavgbitdiff(hashbindigestlist):
 def printresults(resultsdict):
     for hash in resultsdict:
         abd = getavgbitdiff(resultsdict[hash])
-        print "Changing 1 bit in the preimage changes {:.2%} of the bits in the {} hash.".format(abd, hash)
+        print "Changing 1 bit in the preimage changes {:.2%} of the bits " + \
+              "in the {} hash.".format(abd, hash)
 
 
 def main():
