@@ -30,11 +30,15 @@ allhashlen=[128,# MD2
             512]# SHA-512
 
 if len(allhashlen)!=len(allhash):
-    raise ValueError('List of hashes and list of hash lengths are mismatched.')
+    raise ValueError("List of hashes and list of hash lengths are mismatched.")
     exit()
 
 FILESIZE = 1000
 TRIALS = 10000
+NUMBITSTOCHANGE = 1
+
+if NUMBITSTOCHANGE < 1:
+    raise ValueError("Number of bits to change must be positive.")
 
 r=random.SystemRandom()
 
@@ -56,7 +60,7 @@ def makenumbers(fs=FILESIZE,batch=TRIALS):
     rbg=converttograycode(rb)
 
     d = {}
-    for i in range(rb, rb+batch):
+    for i in range(rb, rb+batch, NUMBITSTOCHANGE):
         grayi = bin(converttograycode(i))
         for hfuncname in allhash:
             d.setdefault(grayi,[]).append(eval("%s.new()" % hfuncname))
@@ -112,10 +116,15 @@ def getavgbitdiff(hashbindigestlist):
 
 
 def printresults(resultsdict):
+    if NUMBITSTOCHANGE == 1:
+        bitorbits = "bit"
+    else:
+        bitorbits = "bits"
     for hash in resultsdict:
         abd = getavgbitdiff(resultsdict[hash])
-        print "Changing 1 bit in the preimage changes {:.2%} ".format(abd) + \
-              "the bits in the {} hash.".format(hash)
+        print "Changing {} {} ".format(NUMBITSTOCHANGE, bitorbits) + \
+              "in the preimage changes {:.2%} of the ".format(abd) + \
+              "bits in the {} hash.".format(hash)
 
 
 def main():
