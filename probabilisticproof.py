@@ -18,7 +18,8 @@ import numpy as np
 from Crypto.Hash import *
 from Crypto.Hash import __all__ as allhash
 
-del(allhash[0])
+del(allhash[0]) # We don't use HMAC
+
 allhashlen=[128,# MD2
             128,# MD4
             128,# MD5
@@ -31,7 +32,6 @@ allhashlen=[128,# MD2
 
 if len(allhashlen)!=len(allhash):
     raise ValueError("List of hashes and list of hash lengths are mismatched.")
-    exit()
 
 FILESIZE = 1000
 TRIALS = 10000
@@ -44,6 +44,7 @@ r=random.SystemRandom()
 
 def converttograycode(a):
     """
+    Each consecutive gray code value differs from its predecessor by one bit. 
     https://en.wikipedia.org/wiki/Gray_code#Constructing_an_n-bit_Gray_code
     """
     return (a)^((a)/2) 
@@ -56,6 +57,12 @@ def gensourcebits(fsize=FILESIZE):
 
 
 def makenumbers(fs=FILESIZE,batch=TRIALS):
+    """
+    It's fine that the data we hash are strings of ones and zeros and 
+    not "raw" binary data because bin(ord('1')) is '0b110001', and 
+    bin(ord('0')) is '0b110000', the two values differing by one bit. 
+    Hashing strings of 'A's and '@'s would have had the same effect. 
+    """
     rb=gensourcebits()
     rbg=converttograycode(rb)
 
@@ -67,7 +74,6 @@ def makenumbers(fs=FILESIZE,batch=TRIALS):
         for j in d[grayi]:
             j.update(grayi)
     return d
-
 
 
 def getalldigestsoftype(hashtypeindex, mydict):
@@ -130,8 +136,8 @@ def printresults(resultsdict):
 def main():
     print "Using hash functions from PyCrypto..."
     numsandhashes = makenumbers()
-    hashtypes = dict((allhash[h],getalldigestsoftype(h, numsandhashes)) for \
-                h in range(len(allhash)))
+    hashtypes = dict( (allhash[h],getalldigestsoftype(h, numsandhashes)) \
+                      for h in range(len(allhash)) )
     printresults(hashtypes)
     exit()
 
